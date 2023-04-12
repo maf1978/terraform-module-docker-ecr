@@ -4,6 +4,27 @@ variable "region" {
 } 
 
 variable "project_name" {
-    description = 
-    Name = "us-east-1"
+    name = 
+} 
+
+variable "environment" {
+    name = "Dev"
+} 
+
+#vpc variables 
+variable "cidr_block" {
+    name = "Dev"
+} 
+
+variable "public_subnet_az1_cidr" {
+    name = "Dev"
+} 
+
+
+variable "private_app_subnet_az1_cidr" {
+    name = "Dev"
+} 
+
+variable "private_app_subnet_az2_cidr" {
+    name = "Dev"
 } 

@@ -1,0 +1,1 @@
+{"Path":"/home/maf1978/terraform-module-docker-ecr/jupiter-website-ecs","Version":"2.0","Modules":[{"Key":"vpc","Source":"../modules/vpc","Dir":"modules/vpc"},{"Key":"nat-gateway","Source":"../modules/nat-gateway","Dir":"modules/nat-gateway"}]}

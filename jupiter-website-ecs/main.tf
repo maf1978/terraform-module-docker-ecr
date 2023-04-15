@@ -43,7 +43,7 @@ module "ecs-task-execution-role" {
 
 module "acm" {
   source = "../modules/acm"
-  domian_name                 = var.domian_name
+  domain_name                 = var.domain_name
   alternative_name            = var.alternative_name
 }
 
@@ -54,5 +54,37 @@ module "application_load_balancer" {
   public_subnet_az1_id        = module.vpc.public_subnet_az1_id  
   public_subnet_az2_id        = module.vpc.public_subnet_az2_id
   vpc_id                      = module.vpc.vpc_id
-  certificate_arn             = module.acm.certicate_arn 
+  certificate_arn             = module.acm.certificate_arn 
+}
+
+module "ecs" {
+  source = "../modules/ecs"
+  project_name = module.vpc.project_name
+  ecs_tasks_execution_role_arn = module.ecs_task_execution_role.ecs_tasks_execution_role_arn
+  container_image = var.container_name
+  region = module.vpc.region
+  private_app_subnet_az1_id = module.vpc.private_app_subnet_az1_id
+  private_app_subnet_az2_id = module.vpc.private_app_subnet_az2_id
+  ecs_security_group_id = module.security_group.ecs_security_group_id
+  alb_target_group_anr = module.application_load_balancer.alb_target_group_anr
+}
+
+module "asg" {
+  source = "../modules/asg"
+  ecs_cluster_name = module.ecs.ecs_cluster_name
+  ecs_service_name = module.ecs.ecs_service_name
+}
+
+module "route-53" {
+  source = "../modules/route-53"
+  domain_name = module.acm.domain_name
+  record_name = var.record_name
+  application_load_balancer_dns_name = module.application_load_balancer.application_load_balancer_dns_name
+  application_load_balancer_zone_id = module.application_load_balancer.application_load_balancer_zone_id
+ 
+}
+
+output "website_url" {
+  value = join ("", ["https://"], var.record_name, ".", var.domain_name)
+  
 }

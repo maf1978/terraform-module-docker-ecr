@@ -40,3 +40,9 @@ module "ecs-task-execution-role" {
   source = "../modules/ecs-task-execution-role"
   project_name = module.vpc.project_name
 }
+
+module "acm" {
+  source = "../modules/acm"
+  domian_name = var.domian_name
+  alternative_name = var.alternative_name
+}

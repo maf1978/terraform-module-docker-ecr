@@ -19,8 +19,8 @@ module "vpc" {
 }
 
 # create nat gateway 
-module "nat_gateway"{
-  source = "../modules/nat-gateway"
+module "nat_gateway" {
+  source                       = "../modules/nat-gateway"
   public_subnet_az1_id         = module.vpc.public_subnet_az1_id
   internet_gateway             = module.vpc.internet_gateway
   public_subnet_az2_id         = module.vpc.public_subnet_az2_id 
@@ -32,17 +32,27 @@ module "nat_gateway"{
 }
 
 module "security_group" {
-  source = "../modules/security-groups"
-  vpc_id = module.vpc.vpc_id
+  source                       = "../modules/security-groups"
+  vpc_id                       = module.vpc.vpc_id
 }
 
 module "ecs-task-execution-role" {
-  source = "../modules/ecs-task-execution-role"
-  project_name = module.vpc.project_name
+  source                       = "../modules/ecs-task-execution-role"
+  project_name                 = module.vpc.project_name
 }
 
 module "acm" {
   source = "../modules/acm"
-  domian_name = var.domian_name
-  alternative_name = var.alternative_name
+  domian_name                 = var.domian_name
+  alternative_name            = var.alternative_name
+}
+
+module "application_load_balancer" {
+  source                      = "../modules/alb"
+  project_name                = module.vpc.project_name
+  alb_security_group_id       = module.security_group.alb_security_group_id
+  public_subnet_az1_id        = module.vpc.public_subnet_az1_id  
+  public_subnet_az2_id        = module.vpc.public_subnet_az2_id
+  vpc_id                      = module.vpc.vpc_id
+  certificate_arn             = module.acm.certicate_arn 
 }
